@@ -1,1 +1,1 @@
-# BlogByEgg
+# EggJs框架写的博客服务端
