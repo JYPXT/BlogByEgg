@@ -1,10 +1,10 @@
 'use strict';
 
-const baseController = require('./baseController');
+const Controller = require('egg').Controller;
 
-class categoryController extends baseController {
+class categoryController extends Controller {
   async list() {
-    const { ctx, service } = this;
+    const { ctx, service, ctx: { helper } } = this;
     // const { pageSize, pageIndex, condition } = ctx.request.body;
     try {
       const createRule = {
@@ -13,11 +13,11 @@ class categoryController extends baseController {
         pageIndex: { type: 'number', required: true },
       };
       ctx.validate(createRule);
-      const queryParam = this.queryParam(ctx.request.body);
+      const queryParam = helper.queryParam(ctx.request.body);
       ctx.body = await service.category.list(queryParam);
     } catch (error) {
       ctx.logger.error(new Error(error));
-      ctx.body = this.error({ errorMessage: '提交的字段有错误' });
+      ctx.body = helper.error('提交字段验证出错');
     }
   }
 
@@ -27,7 +27,7 @@ class categoryController extends baseController {
   }
 
   async saveCategory() {
-    const { ctx, service } = this;
+    const { ctx, service, ctx: { helper } } = this;
     const { classification } = ctx.request.body;
     try {
       const createRule = {
@@ -37,12 +37,12 @@ class categoryController extends baseController {
       ctx.body = await service.category.saveCategory({ classification });
     } catch (error) {
       ctx.logger.error(new Error(error));
-      ctx.body = this.error({ errorMessage: '提交的字段有错误' });
+      ctx.body = helper.error('提交字段验证出错');
     }
   }
 
   async deleteCategory() {
-    const { ctx, service } = this;
+    const { ctx, service, ctx: { helper } } = this;
     try {
       const createRule = {
         id: { type: 'number', required: true },
@@ -51,12 +51,12 @@ class categoryController extends baseController {
       ctx.body = await service.category.deleteCategory(ctx.request.body);
     } catch (error) {
       ctx.logger.error(new Error(error));
-      ctx.body = this.error({ errorMessage: '提交的字段有错误' });
+      ctx.body = helper.error('提交字段验证出错');
     }
   }
 
   async editCategory() {
-    const { ctx, service } = this;
+    const { ctx, service, ctx: { helper } } = this;
     try {
       const createRule = {
         id: { type: 'number', required: true },
@@ -66,7 +66,7 @@ class categoryController extends baseController {
       ctx.body = await service.category.editCategory(ctx.request.body);
     } catch (error) {
       ctx.logger.error(new Error(error));
-      ctx.body = this.error({ errorMessage: '提交的字段有错误' });
+      ctx.body = helper.error('提交字段验证出错');
     }
   }
 }

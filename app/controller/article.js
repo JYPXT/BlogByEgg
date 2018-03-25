@@ -1,10 +1,10 @@
 'use strict';
 
-const baseController = require('./baseController');
+const Controller = require('egg').Controller;
 
-class articleController extends baseController {
+class articleController extends Controller {
   async list() {
-    const { ctx, service } = this;
+    const { ctx, service, ctx: { helper } } = this;
     try {
       const createRule = {
         condition: { type: 'object' },
@@ -12,16 +12,16 @@ class articleController extends baseController {
         pageIndex: { type: 'number', required: true },
       };
       ctx.validate(createRule);
-      const queryParam = this.queryParam(ctx.request.body);
+      const queryParam = helper.queryParam(ctx.request.body);
       ctx.body = await service.article.list(queryParam);
     } catch (err) {
       ctx.logger.warn(new Error(err));
-      ctx.body = this.error({ errorMessage: '提交的字段有错误' });
+      ctx.body = helper.error('提交字段验证出错');
     }
   }
 
   async getArticleById() {
-    const { ctx, service } = this;
+    const { ctx, service, ctx: { helper } } = this;
     try {
       const createRule = {
         id: { type: 'string', required: true },
@@ -31,12 +31,12 @@ class articleController extends baseController {
       ctx.body = await service.article.getArticleById(id);
     } catch (err) {
       ctx.logger.warn(new Error(err));
-      ctx.body = this.error({ errorMessage: '提交的字段有错误' });
+      ctx.body = helper.error('提交字段验证出错');
     }
   }
 
   async saveArticle() {
-    const { ctx, service } = this;
+    const { ctx, service, ctx: { helper } } = this;
     try {
       const createRule = {
         title: { type: 'string', required: true },
@@ -47,12 +47,12 @@ class articleController extends baseController {
       ctx.body = await service.article.saveArticle(ctx.request.body);
     } catch (err) {
       ctx.logger.warn(new Error(err));
-      ctx.body = this.error({ errorMessage: '提交的字段有错误' });
+      ctx.body = helper.error('提交字段验证出错');
     }
   }
 
   async editArticle() {
-    const { ctx, service } = this;
+    const { ctx, service, ctx: { helper } } = this;
     try {
       const createRule = {
         id: { type: 'string', required: true }, // 页面的id 从url上获取的
@@ -64,12 +64,12 @@ class articleController extends baseController {
       ctx.body = await service.article.editArticle(ctx.request.body);
     } catch (err) {
       ctx.logger.warn(new Error(err));
-      ctx.body = this.error({ errorMessage: '提交的字段有错误' });
+      ctx.body = helper.error('提交字段验证出错');
     }
   }
 
   async deleteArticle() {
-    const { ctx, service } = this;
+    const { ctx, service, ctx: { helper } } = this;
     try {
       const createRule = {
         id: { type: 'number', required: true },
@@ -78,7 +78,7 @@ class articleController extends baseController {
       ctx.body = await service.article.deleteArticle(ctx.request.body);
     } catch (err) {
       ctx.logger.warn(new Error(err));
-      ctx.body = this.error({ errorMessage: '提交的字段有错误' });
+      ctx.body = helper.error('提交字段验证出错');
     }
   }
 

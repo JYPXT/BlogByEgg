@@ -2,23 +2,21 @@
 
 module.exports = () => {
   return async function auth(ctx, next) {
+
+    const { helper } = ctx;
     const authorization = ctx.request.headers.authorization;
     if (!authorization) {
-      ctx.body = Object.assign(ctx.app.config.result.error, {
-        errorMessage: '违法访问',
-      });
+      ctx.body = helper.error('违法访问');
       return;
     }
     const code = ctx.app.jwt.decode(authorization, ctx.app.config.jwt.secret);
     if (!code) {
-      ctx.body = Object.assign(ctx.app.config.result.error, {
-        errorMessage: 'token错误',
-      });
+      ctx.body = helper.error('token错误');
       return;
     } else if (code.exp < Date.now()) {
-      ctx.body = Object.assign(ctx.app.config.result.error, {
+      ctx.body = helper.error({
         code: '99',
-        errorMessage: 'token过期，请重新登陆',
+        message: 'token过期，请重新登陆',
       });
       return;
     }

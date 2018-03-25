@@ -1,5 +1,11 @@
 'use strict';
 
+const path = require('path');
+
+const resolves = (appInfo, value) => {
+  return path.join(appInfo.baseDir, value);
+};
+
 module.exports = appInfo => {
   const config = exports = {};
 
@@ -9,13 +15,14 @@ module.exports = appInfo => {
   // add your config here
   config.middleware = [ 'auth' ];
   config.auth = {
-    ignore: '/admin',
-    // ignore: /\/admin|\/upload/,
+    // ignore: '/admin',
+    ignore: /\/admin|^\/$/,
   };
 
   // 静态文件夹
   config.static = {
-    prefix: '/static/',
+    prefix: '/',
+    dir: [ resolves(appInfo, 'app/public'), resolves(appInfo, 'app/manager') ],
   };
 
   config.multipart = {
@@ -47,7 +54,7 @@ module.exports = appInfo => {
       enable: false,
       ignoreJSON: true,
     },
-    domainWhiteList: [ 'http://localhost:4200', 'http://localhost:7777' ],
+    domainWhiteList: [ 'http://localhost:4200', 'http://localhost:9999' ],
   };
 
   // {string|Function} origin: '*',
@@ -64,19 +71,6 @@ module.exports = appInfo => {
 
   // pwd加密的叠加字符串
   config.shaSecret = '#13579';
-
-  config.result = {
-    success: {
-      status: 'success',
-      code: '1',
-      successMessage: '',
-    },
-    error: {
-      status: 'error',
-      code: '0',
-      errorMessage: '',
-    },
-  };
 
   return config;
 };

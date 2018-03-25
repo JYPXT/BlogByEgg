@@ -1,10 +1,10 @@
 'use strict';
 
-const baseService = require('./baseService');
+const Service = require('egg').Service;
 
-class articleService extends baseService {
+class articleService extends Service {
   async list(queryParam) {
-    const { ctx, app } = this;
+    const { ctx, app, ctx: { helper } } = this;
     const queryParams = Object.assign({
       include: {
         model: app.model.Category,
@@ -32,20 +32,18 @@ class articleService extends baseService {
           user_id: userId,
         },
       });
-      return this.success({
-        successMessage: 'ok',
+      return helper.success({
+        message: 'ok',
         data: article,
         tags,
       });
     } catch (err) {
-      return this.error({
-        errorMessage: '查询文章出错',
-      });
+      return helper.error('查询错误');
     }
   }
 
   async getArticleById(articleId) {
-    const { ctx, app } = this;
+    const { ctx, app, ctx: { helper } } = this;
     const userId = ctx.state.iss;
     try {
       const data = await app.model.Article.findOne({
@@ -59,43 +57,37 @@ class articleService extends baseService {
         },
       });
 
-      return this.success({
-        successMessage: 'ok',
+      return helper.success({
+        message: 'ok',
         data,
       });
     } catch (err) {
-      return this.error({
-        errorMessage: '查询文章出错',
-      });
+      return helper.error('查询错误');
     }
   }
 
   async saveArticle({ title, picture, content, tags, categoryId, accessRight }) {
-    const { ctx, app } = this;
+    const { ctx, app, ctx: { helper } } = this;
     const userId = ctx.state.iss;
     try {
       const user = await app.model.User.findById(userId);
       const article = await user.createArticle({
         title, content, picture, tags, accessRight, browse: 0,
       });
-      if (this.notEmpty(categoryId)) {
+      if (helper.notEmpty(categoryId)) {
         const category = await app.model.Category.findById(categoryId);
         if (category) {
           article.setCategory(category);
         }
       }
-      return this.success({
-        successMessage: '保存文章成功',
-      });
+      return helper.success('保存文章成功');
     } catch (err) {
-      return this.error({
-        errorMessage: '保存文章出错',
-      });
+      return helper.error('查询错误');
     }
   }
 
   async editArticle({ id, title, picture, content, tags, categoryId, accessRight }) {
-    const { ctx, app } = this;
+    const { ctx, app, ctx: { helper } } = this;
     const userId = ctx.state.iss;
     try {
       const article = await app.model.Article.findOne({
@@ -112,28 +104,20 @@ class articleService extends baseService {
       article.categoryId = categoryId;
       article.accessRight = accessRight;
       await article.save();
-      return this.success({
-        successMessage: '修改文章成功',
-      });
+      return helper.success('修改文章成功');
     } catch (err) {
-      return this.error({
-        errorMessage: '修改数据出错',
-      });
+      return helper.error('查询错误');
     }
   }
 
   async deleteArticle({ id }) {
-    const { app } = this;
+    const { app, ctx: { helper } } = this;
     try {
       const article = await app.model.Article.findById(id);
       await article.destroy();
-      return this.success({
-        successMessage: '删除文章成功',
-      });
+      return helper.success('删除文章成功');
     } catch (err) {
-      return this.error({
-        errorMessage: '删除文章出错',
-      });
+      return helper.error('查询错误');
     }
   }
 

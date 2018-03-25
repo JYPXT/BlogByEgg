@@ -1,10 +1,10 @@
 'use strict';
 
-const baseController = require('./baseController');
+const Controller = require('egg').Controller;
 
-class tagController extends baseController {
+class tagController extends Controller {
   async list() {
-    const { ctx, service } = this;
+    const { ctx, service, ctx: { helper } } = this;
     try {
       const createRule = {
         condition: { type: 'object' },
@@ -12,11 +12,11 @@ class tagController extends baseController {
         pageIndex: { type: 'number', required: true },
       };
       ctx.validate(createRule);
-      const queryParam = this.queryParam(ctx.request.body);
+      const queryParam = helper.queryParam(ctx.request.body);
       ctx.body = await service.tag.list(queryParam);
     } catch (error) {
       ctx.logger.error(new Error(error));
-      ctx.body = this.error({ errorMessage: '提交的字段有错误' });
+      ctx.body = helper.error('提交字段验证出错');
     }
   }
 
@@ -26,7 +26,7 @@ class tagController extends baseController {
   }
 
   async saveTag() {
-    const { ctx, service } = this;
+    const { ctx, service, ctx: { helper } } = this;
     try {
       const tag = ctx.request.body.label;
       const createRule = {
@@ -36,12 +36,12 @@ class tagController extends baseController {
       ctx.body = await service.tag.saveTag({ tag });
     } catch (error) {
       ctx.logger.error(new Error(error));
-      ctx.body = this.error({ errorMessage: '提交的字段有错误' });
+      ctx.body = helper.error('提交字段验证出错');
     }
   }
 
   async deleteTag() {
-    const { ctx, service } = this;
+    const { ctx, service, ctx: { helper } } = this;
     try {
       const createRule = {
         id: { type: 'number', required: true },
@@ -50,12 +50,12 @@ class tagController extends baseController {
       ctx.body = await service.tag.deleteTag(ctx.request.body);
     } catch (error) {
       ctx.logger.error(new Error(error));
-      ctx.body = this.error({ errorMessage: '提交的字段有错误' });
+      ctx.body = helper.error('提交字段验证出错');
     }
   }
 
   async editTag() {
-    const { ctx, service } = this;
+    const { ctx, service, ctx: { helper } } = this;
     try {
       const createRule = {
         id: { type: 'number', required: true },
@@ -65,7 +65,7 @@ class tagController extends baseController {
       ctx.body = await service.tag.editTag(ctx.request.body);
     } catch (error) {
       ctx.logger.error(new Error(error));
-      ctx.body = this.error({ errorMessage: '提交的字段有错误' });
+      ctx.body = helper.error('提交字段验证出错');
     }
   }
 }

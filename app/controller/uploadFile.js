@@ -3,12 +3,12 @@
 const path = require('path');
 const sendToWormhole = require('stream-wormhole');
 const awaitWriteStream = require('await-stream-ready').write;
-const baseController = require('./baseController');
+const Controller = require('egg').Controller;
 const fs = require('fs');
 
-class uploadFileController extends baseController {
+class uploadFileController extends Controller {
   async upload() {
-    const { ctx, app } = this;
+    const { ctx, app, ctx: { helper } } = this;
     try {
       const stream = await ctx.getFileStream();
       const suffix = stream.filename.substr(stream.filename.lastIndexOf('.'));
@@ -21,17 +21,17 @@ class uploadFileController extends baseController {
       } catch (err) {
         // 把流消费掉
         await sendToWormhole(stream);
-        ctx.body = this.error({ errorMessage: err });
+        ctx.body = helper.error(err);
         throw err;
       }
 
-      ctx.body = this.success({
-        successMessage: '上传成功',
+      ctx.body = helper.success({
+        message: '上传成功',
         imageUrl: `${app.config.static.prefix}${name}`,
       });
 
     } catch (error) {
-      ctx.body = this.error({ errorMessage: '文件错误，只能上传图片' });
+      ctx.body = helper.error('文件错误，只能上传图片');
     }
 
   }

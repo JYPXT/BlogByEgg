@@ -1,35 +1,30 @@
 'use strict';
 
-const baseService = require('./baseService');
-const crypto = require('crypto');
+const Service = require('egg').Service;
 
-class adminService extends baseService {
+class adminService extends Service {
   async login({ account, password }) {
-    const { ctx, app } = this;
-    const user = await app.model.User.findOne({
-      where: {
-        account,
-        password: this.crypto(password),
-      },
-    });
-
-    if (!user) {
-      return this.error({
-        errorMessage: '账号或密码错误',
+    const { ctx, app, ctx: { helper } } = this;
+    try {
+      const user = await app.model.User.findOne({
+        where: {
+          account,
+          password: helper.crypto(password),
+        },
       });
+
+      if (!user) {
+        return helper.error('账号或密码错误');
+      }
+      const { id, nick, desc, portrait, background } = user;
+      const token = await this.getToken(ctx, id);
+      return helper.success({
+        message: '登陆成功',
+        data: { nick, desc, portrait, background, token },
+      });
+    } catch (error) {
+      return helper.error('查询错误');
     }
-    const { id, nick, desc, portrait, background } = user;
-    const token = await this.getToken(ctx, id);
-    return this.success({
-      successMessage: '登陆成功',
-      data: {
-        nick,
-        desc,
-        portrait,
-        background,
-        token,
-      },
-    });
   }
 
   async getToken(ctx, key) {
@@ -42,9 +37,6 @@ class adminService extends baseService {
     return ctx.app.jwt.sign(options, secret);
   }
 
-  crypto(str, type = 'sha256') {
-    return crypto.createHash(type).update(str + this.app.config.shaSecret).digest('hex');
-  }
 }
 
 module.exports = adminService;
