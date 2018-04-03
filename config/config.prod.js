@@ -9,7 +9,7 @@ module.exports = appInfo => {
       enable: false,
       ignoreJSON: true,
     },
-    domainWhiteList: [ 'http://localhost:4200', 'http://localhost:9999' ],
+    domainWhiteList: [],
   };
   console.log(appInfo);
 

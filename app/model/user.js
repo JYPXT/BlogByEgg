@@ -32,11 +32,11 @@ module.exports = app => {
       type: STRING(64),
       allowNull: true,
     },
-    head_portrait: {
+    avatar: {
       type: STRING(255),
       allowNull: true,
     },
-    backgroundImage: {
+    background: {
       type: STRING(255),
       allowNull: true,
     },
@@ -44,7 +44,7 @@ module.exports = app => {
       type: BOOLEAN,
       allowNull: true,
     },
-    audit: {
+    domain: {
       type: BOOLEAN,
       allowNull: true,
     },

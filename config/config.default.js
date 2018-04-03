@@ -15,14 +15,23 @@ module.exports = appInfo => {
   // add your config here
   config.middleware = [ 'auth' ];
   config.auth = {
-    // ignore: '/admin',
-    ignore: /\/admin|^\/$/,
+    ignore: /\/admin|^\/$|^\/apis\//,
+  };
+
+  // cors
+  config.security = {
+    csrf: {
+      enable: false,
+      ignoreJSON: true,
+    },
+    domainWhiteList: [ ],
   };
 
   // 静态文件夹
   config.static = {
     prefix: '/',
-    dir: [ resolves(appInfo, 'app/public'), resolves(appInfo, 'app/manager') ],
+    dir: [ resolves(appInfo, 'app/public') ],
+    maxAge: 86400,
   };
 
   config.multipart = {
@@ -41,36 +50,18 @@ module.exports = appInfo => {
 
   config.sequelize = {
     dialect: 'mysql', // support: mysql, mariadb, postgres, mssql
-    database: 'blogs',
+    database: 'blog',
     host: 'localhost',
     port: '3306',
-    username: 'root',
-    password: 'a123456',
+    username: '',
+    password: '',
   };
-
-  // cors
-  config.security = {
-    csrf: {
-      enable: false,
-      ignoreJSON: true,
-    },
-    domainWhiteList: [ 'http://localhost:4200', 'http://localhost:9999' ],
-  };
-
-  // {string|Function} origin: '*',
-  // {string|Array} allowMethods: 'GET,HEAD,PUT,POST,DELETE,PATCH'
-  // config.cors = {
-  //   allowMethods: 'GET,HEAD,PUT,POST,DELETE,PATCH,OPTIONS',
-  // };
 
   config.jwt = {
     secret: '135792468',
     enable: false,
     expires: 60 * 60 * 1000,
   };
-
-  // pwd加密的叠加字符串
-  config.shaSecret = '#13579';
 
   return config;
 };

@@ -4,27 +4,40 @@
  * @param {Egg.Application} app - egg application
  */
 module.exports = app => {
-  const { router, controller } = app;
-  router.get('/admin', controller.admin.index);
-  router.get('/article/admin', controller.admin.index);
-  router.post('/admin/login', controller.admin.login);
-  router.post('/article/list', controller.article.list);
-  router.post('/article/getArticleById', controller.article.getArticleById);
-  router.post('/article/saveArticle', controller.article.saveArticle);
-  router.post('/article/editArticle', controller.article.editArticle);
-  router.post('/article/deleteArticle', controller.article.deleteArticle);
+  const { router, controller, middleware } = app;
+  const formdata = middleware.formdata(); // 上传文件的中间件
 
-  router.post('/category/list', controller.category.list);
-  router.post('/category/listAll', controller.category.listAll);
-  router.post('/category/saveCategory', controller.category.saveCategory);
-  router.post('/category/deleteCategory', controller.category.deleteCategory);
-  router.post('/category/editCategory', controller.category.editCategory);
+  router.post('/api/admin/login', controller.server.admin.login);
 
-  router.post('/tag/list', controller.tag.list);
-  router.post('/tag/listAll', controller.tag.listAll);
-  router.post('/tag/saveTag', controller.tag.saveTag);
-  router.post('/tag/deleteTag', controller.tag.deleteTag);
-  router.post('/tag/editTag', controller.tag.editTag);
+  router.post('/api/user/getUserInfo', controller.server.user.getUserInfo);
+  router.post('/api/user/editPassword', controller.server.user.editPassword);
+  router.post('/api/user/editUserInfo', formdata, controller.server.user.editUserInfo);
 
-  router.post('/uploadFile/upload', controller.uploadFile.upload);
+  router.post('/api/article/list', controller.server.article.list);
+  router.post('/api/article/getArticleById', controller.server.article.getArticleById);
+  router.post('/api/article/saveArticle', formdata, controller.server.article.saveArticle);
+  router.post('/api/article/editArticle', formdata, controller.server.article.editArticle);
+  router.post('/api/article/deleteArticle', controller.server.article.deleteArticle);
+
+  router.post('/api/category/list', controller.server.category.list);
+  router.post('/api/category/listAll', controller.server.category.listAll);
+  router.post('/api/category/saveCategory', controller.server.category.saveCategory);
+  router.post('/api/category/deleteCategory', controller.server.category.deleteCategory);
+  router.post('/api/category/editCategory', controller.server.category.editCategory);
+
+  router.post('/api/tag/list', controller.server.tag.list);
+  router.post('/api/tag/listAll', controller.server.tag.listAll);
+  router.post('/api/tag/saveTag', controller.server.tag.saveTag);
+  router.post('/api/tag/deleteTag', controller.server.tag.deleteTag);
+  router.post('/api/tag/editTag', controller.server.tag.editTag);
+
+  router.post('/api/uploadFile/upload', controller.server.uploadFile.upload);
+
+  router.get('/apis/article/list', controller.frontend.article.list);
+  router.get('/apis/article/getArticleById', controller.frontend.article.getArticleById);
+  router.get('/apis/article/articleArchive', controller.frontend.article.articleArchive);
+  router.get('/apis/article/searchArticle', controller.frontend.article.searchArticle);
+  router.get('/apis/article/getArticleListByTag', controller.frontend.article.getArticleListByTag);
+  router.get('/apis/tag/list', controller.frontend.tag.list);
+
 };

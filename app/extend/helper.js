@@ -38,13 +38,13 @@ module.exports = {
    */
 
   queryParam({ pageSize, pageIndex, condition, order }) {
-    const { ctx } = this;
-    const userId = ctx.state.iss;
+    // const { ctx } = this;
+    // const userId = ctx.state.iss;
     let result = {
       where: {
-        user_id: userId,
+        // user_id: userId,
       },
-      limit: pageSize,
+      limit: parseInt(pageSize, 10),
       offset: pageSize * (pageIndex - 1),
     };
 
@@ -77,7 +77,7 @@ module.exports = {
     //   if (typeof val === type)
     // }
 
-    if (val !== null && val !== '' && val !== undefined) {
+    if (val !== null && val !== '' && val !== undefined && val !== 'undefined') {
       return true;
     }
     return false;
